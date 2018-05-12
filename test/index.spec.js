@@ -155,3 +155,65 @@ ava.test('nested string property', (test) => {
 
 	test.deepEqual(result.build(), query)
 })
+
+ava.test('nested string property with const', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'object',
+				properties: {
+					bar: {
+						type: 'string',
+						const: 'baz'
+					}
+				}
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING')
+			.and(rethinkdb.row('foo')('bar').eq('baz')))
+		.build()
+
+	test.deepEqual(result.build(), query)
+})
+
+ava.test.skip('multiple nested strings with const', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'object',
+				properties: {
+					bar: {
+						type: 'string',
+						const: 'baz'
+					},
+					baz: {
+						type: 'string',
+						const: 'qux'
+					}
+				}
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING')
+			.and(rethinkdb.row('foo')('bar').eq('baz'))
+			.and(rethinkdb.row('foo')('baz').typeOf().eq('STRING'))
+			.and(rethinkdb.row('foo')('baz').eq('qux')))
+		.build()
+
+	test.deepEqual(result.build(), query)
+})
