@@ -18,6 +18,12 @@ const ava = require('ava')
 const rethinkdb = require('rethinkdb')
 const translator = require('..')
 
+// A terrible hack to access the Func AST class
+// and be able to control the .nextVarId internal
+// counter for testing purposes.
+// eslint-disable-next-line no-proto,no-restricted-properties
+const Func = require('rethinkdb/ast').expr(Object.is).__proto__
+
 ava.test('wildcard schema', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
@@ -27,10 +33,9 @@ ava.test('wildcard schema', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(true)
 		.build()
 
-	test.deepEqual(result, query)
+	test.deepEqual(result.build(), query)
 })
 
 ava.test('one string property', (test) => {
@@ -43,13 +48,15 @@ ava.test('one string property', (test) => {
 		}
 	})
 
+	Func.constructor.nextVarId -= 1
+
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('STRING'))
 		.build()
 
-	test.deepEqual(result, query)
+	test.deepEqual(result.build(), query)
 })
 
 ava.test('one string property with const', (test) => {
@@ -63,6 +70,8 @@ ava.test('one string property with const', (test) => {
 		}
 	})
 
+	Func.constructor.nextVarId -= 1
+
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
@@ -70,7 +79,7 @@ ava.test('one string property with const', (test) => {
 			.and(rethinkdb.row('foo').eq('bar')))
 		.build()
 
-	test.deepEqual(result, query)
+	test.deepEqual(result.build(), query)
 })
 
 ava.test('one string property with pattern', (test) => {
@@ -84,6 +93,8 @@ ava.test('one string property with pattern', (test) => {
 		}
 	})
 
+	Func.constructor.nextVarId -= 1
+
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
@@ -91,7 +102,7 @@ ava.test('one string property with pattern', (test) => {
 			.and(rethinkdb.row('foo').match('^foo$')))
 		.build()
 
-	test.deepEqual(result, query)
+	test.deepEqual(result.build(), query)
 })
 
 ava.test('two string properties', (test) => {
@@ -107,6 +118,8 @@ ava.test('two string properties', (test) => {
 		}
 	})
 
+	Func.constructor.nextVarId -= 1
+
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
@@ -114,5 +127,31 @@ ava.test('two string properties', (test) => {
 			.and(rethinkdb.row('bar').typeOf().eq('STRING')))
 		.build()
 
-	test.deepEqual(result, query)
+	test.deepEqual(result.build(), query)
+})
+
+ava.test('nested string property', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'object',
+				properties: {
+					bar: {
+						type: 'string'
+					}
+				}
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING'))
+		.build()
+
+	test.deepEqual(result.build(), query)
 })

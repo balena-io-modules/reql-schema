@@ -210,7 +210,7 @@ rules:
     - always
   max-len:
     - error
-    - code: 130
+    - code: 80
       comments: 150
       ignoreComments: false
       ignoreTrailingComments: false
