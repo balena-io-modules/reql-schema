@@ -152,6 +152,79 @@ ava.test('one string property with pattern', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('one property with a negated type', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		properties: {
+			foo: {
+				not: {
+					type: 'string'
+				}
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.not(rethinkdb.row('foo').typeOf().eq('STRING')))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('one property with a negated type and other properties', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		properties: {
+			foo: {
+				not: {
+					type: 'string',
+					pattern: '^foo$'
+				}
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.not(
+			rethinkdb.row('foo').typeOf().eq('STRING').and(
+				rethinkdb.row('foo').match('^foo$')
+			)))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('one property with a negated object', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		not: {
+			properties: {
+				foo: {
+					type: 'string'
+				}
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.not(rethinkdb.row('foo').typeOf().eq('STRING')))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one string property with format: uuid', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
