@@ -97,8 +97,8 @@ ava.test('one optional string property with other properties', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(
-			rethinkdb.branch(rethinkdb.row('foo').typeOf().eq('NULL'),
+		.filter(rethinkdb.branch(
+			rethinkdb.row('foo').typeOf().eq('NULL'),
 			true,
 			rethinkdb.row('foo').typeOf().eq('STRING')
 				.and(rethinkdb.row('foo').match('^foo$'))))
