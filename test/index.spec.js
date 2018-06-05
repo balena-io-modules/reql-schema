@@ -81,6 +81,31 @@ ava.test('one optional string property without other properties', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('one optional string property with other properties', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'string',
+				pattern: '^foo$'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(
+			rethinkdb.branch(rethinkdb.row('foo').typeOf().eq('NULL'),
+			true,
+			rethinkdb.row('foo').typeOf().eq('STRING')
+				.and(rethinkdb.row('foo').match('^foo$'))))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one string property with const', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
