@@ -33,9 +33,8 @@ ava.test('wildcard schema', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.build()
 
-	test.deepEqual(result.build(), query)
+	test.deepEqual(result.build(), query.build())
 })
 
 ava.test('one string property', (test) => {
@@ -54,9 +53,8 @@ ava.test('one string property', (test) => {
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('STRING'))
-		.build()
 
-	test.deepEqual(result.build(), query)
+	test.deepEqual(result.build(), query.build())
 })
 
 ava.test('one string property with const', (test) => {
@@ -77,9 +75,8 @@ ava.test('one string property with const', (test) => {
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
 			.and(rethinkdb.row('foo').eq('bar')))
-		.build()
 
-	test.deepEqual(result.build(), query)
+	test.deepEqual(result.build(), query.build())
 })
 
 ava.test('one string property with pattern', (test) => {
@@ -100,9 +97,8 @@ ava.test('one string property with pattern', (test) => {
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
 			.and(rethinkdb.row('foo').match('^foo$')))
-		.build()
 
-	test.deepEqual(result.build(), query)
+	test.deepEqual(result.build(), query.build())
 })
 
 ava.test('two string properties', (test) => {
@@ -125,9 +121,8 @@ ava.test('two string properties', (test) => {
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
 			.and(rethinkdb.row('bar').typeOf().eq('STRING')))
-		.build()
 
-	test.deepEqual(result.build(), query)
+	test.deepEqual(result.build(), query.build())
 })
 
 ava.test('nested string property', (test) => {
@@ -151,9 +146,8 @@ ava.test('nested string property', (test) => {
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING'))
-		.build()
 
-	test.deepEqual(result.build(), query)
+	test.deepEqual(result.build(), query.build())
 })
 
 ava.test('nested string property with const', (test) => {
@@ -179,12 +173,11 @@ ava.test('nested string property with const', (test) => {
 		.table('myTable')
 		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING')
 			.and(rethinkdb.row('foo')('bar').eq('baz')))
-		.build()
 
-	test.deepEqual(result.build(), query)
+	test.deepEqual(result.build(), query.build())
 })
 
-ava.test.skip('multiple nested strings with const', (test) => {
+ava.test('multiple nested strings with const', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
 		properties: {
@@ -209,11 +202,11 @@ ava.test.skip('multiple nested strings with const', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING')
-			.and(rethinkdb.row('foo')('bar').eq('baz'))
-			.and(rethinkdb.row('foo')('baz').typeOf().eq('STRING'))
-			.and(rethinkdb.row('foo')('baz').eq('qux')))
-		.build()
+		.filter(
+			rethinkdb.row('foo')('bar').typeOf().eq('STRING')
+				.and(rethinkdb.row('foo')('bar').eq('baz'))
+				.and(rethinkdb.row('foo')('baz').typeOf().eq('STRING')
+					.and(rethinkdb.row('foo')('baz').eq('qux'))))
 
-	test.deepEqual(result.build(), query)
+	test.deepEqual(result.build(), query.build())
 })
