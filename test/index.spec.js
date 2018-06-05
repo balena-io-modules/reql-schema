@@ -40,6 +40,7 @@ ava.test('wildcard schema', (test) => {
 ava.test('one string property', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'string'
@@ -60,6 +61,7 @@ ava.test('one string property', (test) => {
 ava.test('one string property with const', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'string',
@@ -82,6 +84,7 @@ ava.test('one string property with const', (test) => {
 ava.test('one string property with pattern', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'string',
@@ -104,6 +107,7 @@ ava.test('one string property with pattern', (test) => {
 ava.test('one string property with format: uuid', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'string',
@@ -128,6 +132,7 @@ ava.test('one string property with format: uuid', (test) => {
 ava.test('one string property with format: email', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'string',
@@ -150,6 +155,7 @@ ava.test('one string property with format: email', (test) => {
 ava.test('one string property with format: date-time', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'string',
@@ -173,6 +179,7 @@ ava.test('one string property with format: date-time', (test) => {
 ava.test('one string property with enum', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'string',
@@ -199,6 +206,7 @@ ava.test('one string property with enum', (test) => {
 ava.test('one array property with contains', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'array',
@@ -223,9 +231,11 @@ ava.test('one array property with contains', (test) => {
 ava.test('one nested string property with enum', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'object',
+				required: [ 'bar' ],
 				properties: {
 					bar: {
 						type: 'string',
@@ -254,6 +264,7 @@ ava.test('one nested string property with enum', (test) => {
 ava.test('two string properties', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo', 'bar' ],
 		properties: {
 			foo: {
 				type: 'string'
@@ -278,9 +289,11 @@ ava.test('two string properties', (test) => {
 ava.test('nested string property', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'object',
+				required: [ 'bar' ],
 				properties: {
 					bar: {
 						type: 'string'
@@ -303,9 +316,11 @@ ava.test('nested string property', (test) => {
 ava.test('nested string property with const', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'object',
+				required: [ 'bar' ],
 				properties: {
 					bar: {
 						type: 'string',
@@ -330,9 +345,11 @@ ava.test('nested string property with const', (test) => {
 ava.test('multiple nested strings with const', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
+		required: [ 'foo' ],
 		properties: {
 			foo: {
 				type: 'object',
+				required: [ 'bar', 'baz' ],
 				properties: {
 					bar: {
 						type: 'string',
