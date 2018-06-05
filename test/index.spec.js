@@ -58,6 +58,29 @@ ava.test('one string property', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('one optional string property without other properties', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'string'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 2
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.expr([
+			'NULL',
+			'STRING'
+		]).contains(rethinkdb.row('foo').typeOf()))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one string property with const', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
