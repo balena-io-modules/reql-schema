@@ -101,6 +101,63 @@ ava.test('one string property with pattern', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('one string property with enum', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'string',
+				enum: [ 'foo', 'bar', 'baz' ]
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 2
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+			.and(rethinkdb.expr([
+				'foo',
+				'bar',
+				'baz' ]
+			).contains(rethinkdb.row('foo'))))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('one nested string property with enum', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'object',
+				properties: {
+					bar: {
+						type: 'string',
+						enum: [ 'foo', 'bar', 'baz' ]
+					}
+				}
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 2
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING')
+			.and(rethinkdb.expr([
+				'foo',
+				'bar',
+				'baz'
+			]).contains(rethinkdb.row('foo')('bar'))))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('two string properties', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
