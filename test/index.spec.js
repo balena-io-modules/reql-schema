@@ -101,6 +101,52 @@ ava.test('one string property with pattern', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('one string property with format: uuid', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'string',
+				format: 'uuid'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+			.and(rethinkdb.row('foo').match(
+				'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+			)))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('one string property with format: email', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'string',
+				format: 'email'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+			.and(rethinkdb.row('foo').match('^\\S+@\\S+\\.\\S+$')))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one string property with enum', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
