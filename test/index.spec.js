@@ -147,6 +147,29 @@ ava.test('one string property with format: email', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('one string property with format: date-time', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			foo: {
+				type: 'string',
+				format: 'date-time'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+			.and(rethinkdb.row('foo').match(
+				'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$')))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one string property with enum', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
