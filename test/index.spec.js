@@ -58,6 +58,56 @@ ava.test('one string property', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('one multiple type property', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		properties: {
+			foo: {
+				type: [ 'string', 'number' ]
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 2
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.expr([
+			'STRING',
+			'NUMBER'
+		]).contains(rethinkdb.row('foo').typeOf()))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('one multiple type property with other constraints', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		properties: {
+			foo: {
+				type: [ 'string', 'number' ],
+				pattern: '^foo$'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 2
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.expr([
+			'STRING',
+			'NUMBER'
+		]).contains(rethinkdb.row('foo').typeOf())
+			.and(rethinkdb.row('foo').match('^foo$')))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one optional string property without other properties', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
