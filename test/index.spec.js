@@ -202,6 +202,81 @@ ava.test('should ignore the description property', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('one number property with minimum', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		description: 'Lorem Ipsum Dolor Sit Amet',
+		properties: {
+			foo: {
+				type: 'number',
+				minimum: 5
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER')
+			.and(rethinkdb.row('foo').ge(5)))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('one number property with maximum', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		description: 'Lorem Ipsum Dolor Sit Amet',
+		properties: {
+			foo: {
+				type: 'number',
+				maximum: 5
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER')
+			.and(rethinkdb.row('foo').le(5)))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('one number property with minimum and maximum', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		description: 'Lorem Ipsum Dolor Sit Amet',
+		properties: {
+			foo: {
+				type: 'number',
+				minimum: 3,
+				maximum: 5
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(
+			rethinkdb.row('foo').typeOf().eq('NUMBER')
+				.and(rethinkdb.row('foo').ge(3))
+				.and(rethinkdb.row('foo').le(5)))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one property with a negated type', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
