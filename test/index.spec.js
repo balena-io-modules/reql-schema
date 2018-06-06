@@ -673,3 +673,36 @@ ava.test('multiple nested strings with const', (test) => {
 
 	test.deepEqual(result.build(), query.build())
 })
+
+ava.test('multiple string properties with object allOf', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo', 'bar' ],
+		allOf: [
+			{
+				properties: {
+					foo: {
+						type: 'string'
+					}
+				}
+			},
+			{
+				properties: {
+					bar: {
+						type: 'string'
+					}
+				}
+			}
+		]
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+			.and(rethinkdb.row('bar').typeOf().eq('STRING')))
+
+	test.deepEqual(result.build(), query.build())
+})
