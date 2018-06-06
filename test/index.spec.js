@@ -152,6 +152,56 @@ ava.test('one string property with pattern', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('should ignore the title property', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		title: 'HELLO',
+		properties: {
+			foo: {
+				title: 'WORLD',
+				type: 'string',
+				pattern: '^foo$'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+			.and(rethinkdb.row('foo').match('^foo$')))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('should ignore the description property', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		description: 'Lorem Ipsum Dolor Sit Amet',
+		properties: {
+			foo: {
+				description: 'Lorem Ipsum Dolor Sit Amet',
+				type: 'string',
+				pattern: '^foo$'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+			.and(rethinkdb.row('foo').match('^foo$')))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one property with a negated type', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
