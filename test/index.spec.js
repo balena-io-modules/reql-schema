@@ -733,7 +733,7 @@ ava.test('one property with nested allOf', (test) => {
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER')
 			.and(rethinkdb.row('foo').ge(5)
-		  .and(rethinkdb.row('foo').le(7))))
+				.and(rethinkdb.row('foo').le(7))))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -797,7 +797,7 @@ ava.test('one property with nested anyOf', (test) => {
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER')
 			.and(rethinkdb.row('foo').ge(5)
-		  .or(rethinkdb.row('foo').le(7))))
+				.or(rethinkdb.row('foo').le(7))))
 
 	test.deepEqual(result.build(), query.build())
 })
