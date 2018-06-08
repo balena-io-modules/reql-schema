@@ -20,7 +20,7 @@ const rethinkdb = require('rethinkdb')
 const reqlSchema = require('reql-schema')
 
 const connection = await rethinkdb.connect({ ... })
-const cursor = await reqlSchema({
+const cursor = await reqlSchema('myDb', 'myTable', {
 	type: 'object',
 	required: [ 'foo' ],
 	properties: {
