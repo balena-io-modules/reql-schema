@@ -524,6 +524,31 @@ ava.test('one array property with contains', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('(mock) one array property with items', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'foo' ],
+		properties: {
+			foo: {
+				type: 'array',
+				items: {
+					type: 'string',
+					pattern: '^foo$'
+				}
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('foo').typeOf().eq('ARRAY'))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one nested string property with enum', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
