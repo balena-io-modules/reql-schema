@@ -826,3 +826,36 @@ ava.test('one property with nested anyOf', (test) => {
 
 	test.deepEqual(result.build(), query.build())
 })
+
+ava.test('nested const boolean property', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string'
+			},
+			data: {
+				type: 'object',
+				properties: {
+					executed: {
+						type: 'boolean',
+						const: false
+					}
+				},
+				required: [ 'executed' ]
+			}
+		},
+		required: [ 'id', 'data' ]
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('id').typeOf().eq('STRING')
+			.and(rethinkdb.row('data')('executed').typeOf().eq('BOOL')
+				.and(rethinkdb.row('data')('executed').eq(false))))
+
+	test.deepEqual(result.build(), query.build())
+})
