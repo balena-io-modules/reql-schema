@@ -99,7 +99,7 @@ ava.test('one multiple type property with other constraints', (test) => {
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
 			.or(rethinkdb.row('foo').typeOf().eq('NUMBER'))
-				.and(rethinkdb.row('foo').match('^foo$')))
+			.and(rethinkdb.row('foo').match('^foo$')))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -119,8 +119,10 @@ ava.test('one optional string property without other properties', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('NULL')
-			.or(rethinkdb.row('foo').typeOf().eq('STRING')))
+		.filter(rethinkdb.branch(
+			rethinkdb.row('foo').typeOf().eq('NULL'),
+			true,
+			rethinkdb.row('foo').typeOf().eq('STRING')))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -850,6 +852,34 @@ ava.test('nested const boolean property', (test) => {
 		.filter(rethinkdb.row('id').typeOf().eq('STRING')
 			.and(rethinkdb.row('data')('executed').typeOf().eq('BOOL')
 				.and(rethinkdb.row('data')('executed').eq(false))))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('required object subset', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string'
+			},
+			data: {
+				type: 'string'
+			}
+		},
+		required: [ 'data' ]
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.branch(
+			rethinkdb.row('id').typeOf().eq('NULL'),
+			true,
+			rethinkdb.row('id').typeOf().eq('STRING'))
+			.and(rethinkdb.row('data').typeOf().eq('STRING')))
 
 	test.deepEqual(result.build(), query.build())
 })
