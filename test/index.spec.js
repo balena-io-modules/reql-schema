@@ -53,7 +53,7 @@ ava.test('one string property', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING'))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -74,8 +74,8 @@ ava.test('one multiple type property', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.or(rethinkdb.row('foo').typeOf().eq('NUMBER')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.or(rethinkdb.row('foo').typeOf().eq('NUMBER').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -97,9 +97,9 @@ ava.test('one multiple type property with other constraints', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.or(rethinkdb.row('foo').typeOf().eq('NUMBER'))
-			.and(rethinkdb.row('foo').match('^foo$')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.or(rethinkdb.row('foo').typeOf().eq('NUMBER').default(false))
+			.and(rethinkdb.row('foo').match('^foo$').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -120,9 +120,9 @@ ava.test('one optional string property without other properties', (test) => {
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.branch(
-			rethinkdb.row('foo').typeOf().eq('NULL'),
+			rethinkdb.row('foo').typeOf().eq('NULL').default(false),
 			true,
-			rethinkdb.row('foo').typeOf().eq('STRING')))
+			rethinkdb.row('foo').typeOf().eq('STRING').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -144,10 +144,10 @@ ava.test('one optional string property with other properties', (test) => {
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.branch(
-			rethinkdb.row('foo').typeOf().eq('NULL'),
+			rethinkdb.row('foo').typeOf().eq('NULL').default(false),
 			true,
-			rethinkdb.row('foo').typeOf().eq('STRING')
-				.and(rethinkdb.row('foo').match('^foo$'))))
+			rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+				.and(rethinkdb.row('foo').match('^foo$').default(false))))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -169,8 +169,8 @@ ava.test('one string property with const', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.and(rethinkdb.row('foo').eq('bar')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('foo').eq('bar').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -192,8 +192,8 @@ ava.test('one string property with pattern', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.and(rethinkdb.row('foo').match('^foo$')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('foo').match('^foo$').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -217,8 +217,8 @@ ava.test('should ignore the title property', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.and(rethinkdb.row('foo').match('^foo$')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('foo').match('^foo$').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -242,8 +242,8 @@ ava.test('should ignore the description property', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.and(rethinkdb.row('foo').match('^foo$')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('foo').match('^foo$').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -266,8 +266,8 @@ ava.test('one number property with minimum', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER')
-			.and(rethinkdb.row('foo').ge(5)))
+		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER').default(false)
+			.and(rethinkdb.row('foo').ge(5).default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -290,8 +290,8 @@ ava.test('one number property with maximum', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER')
-			.and(rethinkdb.row('foo').le(5)))
+		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER').default(false)
+			.and(rethinkdb.row('foo').le(5).default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -316,9 +316,9 @@ ava.test('one number property with minimum and maximum', (test) => {
 		.db('myDb')
 		.table('myTable')
 		.filter(
-			rethinkdb.row('foo').typeOf().eq('NUMBER')
-				.and(rethinkdb.row('foo').ge(3))
-				.and(rethinkdb.row('foo').le(5)))
+			rethinkdb.row('foo').typeOf().eq('NUMBER').default(false)
+				.and(rethinkdb.row('foo').ge(3).default(false))
+				.and(rethinkdb.row('foo').le(5).default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -341,7 +341,9 @@ ava.test('one property with a negated type', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.not(rethinkdb.row('foo').typeOf().eq('STRING')))
+		.filter(rethinkdb.not(
+			rethinkdb.row('foo').typeOf().eq('STRING').default(false))
+		)
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -366,8 +368,8 @@ ava.test('one property with a negated type and other properties', (test) => {
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.not(
-			rethinkdb.row('foo').typeOf().eq('STRING').and(
-				rethinkdb.row('foo').match('^foo$')
+			rethinkdb.row('foo').typeOf().eq('STRING').default(false).and(
+				rethinkdb.row('foo').match('^foo$').default(false)
 			)))
 
 	test.deepEqual(result.build(), query.build())
@@ -391,7 +393,9 @@ ava.test('one property with a negated object', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.not(rethinkdb.row('foo').typeOf().eq('STRING')))
+		.filter(rethinkdb.not(
+			rethinkdb.row('foo').typeOf().eq('STRING').default(false))
+		)
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -413,10 +417,10 @@ ava.test('one string property with format: uuid', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
 			.and(rethinkdb.row('foo').match(
 				'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-			)))
+			).default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -438,8 +442,13 @@ ava.test('one string property with format: email', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.and(rethinkdb.row('foo').match('^\\S+@\\S+\\.\\S+$')))
+		.filter(
+			rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+				.and(
+					rethinkdb.row('foo')
+						.match('^\\S+@\\S+\\.\\S+$').default(false)
+				)
+		)
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -461,9 +470,10 @@ ava.test('one string property with format: date-time', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
 			.and(rethinkdb.row('foo').match(
-				'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$')))
+				'^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$')
+				.default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -485,7 +495,7 @@ ava.test('one string property with enum', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
 			.and(rethinkdb.expr([
 				'foo',
 				'bar',
@@ -514,7 +524,7 @@ ava.test('one array property with contains', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('ARRAY')
+		.filter(rethinkdb.row('foo').typeOf().eq('ARRAY').default(false)
 			.and(rethinkdb.row('foo').contains('hello')))
 
 	test.deepEqual(result.build(), query.build())
@@ -540,7 +550,7 @@ ava.test('(mock) one array property with items', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('ARRAY'))
+		.filter(rethinkdb.row('foo').typeOf().eq('ARRAY').default(false))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -568,7 +578,7 @@ ava.test('one nested string property with enum', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING')
+		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING').default(false)
 			.and(rethinkdb.expr([
 				'foo',
 				'bar',
@@ -597,8 +607,8 @@ ava.test('two string properties', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.and(rethinkdb.row('bar').typeOf().eq('STRING')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('bar').typeOf().eq('STRING').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -625,7 +635,8 @@ ava.test('nested string property', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING'))
+		.filter(rethinkdb.row('foo')('bar')
+			.typeOf().eq('STRING').default(false))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -653,8 +664,8 @@ ava.test('nested string property with const', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING')
-			.and(rethinkdb.row('foo')('bar').eq('baz')))
+		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('foo')('bar').eq('baz').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -687,10 +698,12 @@ ava.test('multiple nested strings with const', (test) => {
 		.db('myDb')
 		.table('myTable')
 		.filter(
-			rethinkdb.row('foo')('bar').typeOf().eq('STRING')
-				.and(rethinkdb.row('foo')('bar').eq('baz'))
-				.and(rethinkdb.row('foo')('baz').typeOf().eq('STRING')
-					.and(rethinkdb.row('foo')('baz').eq('qux'))))
+			rethinkdb.row('foo')('bar').typeOf().eq('STRING').default(false)
+				.and(rethinkdb.row('foo')('bar')
+					.eq('baz').default(false))
+				.and(rethinkdb.row('foo')('baz')
+					.typeOf().eq('STRING').default(false)
+					.and(rethinkdb.row('foo')('baz').eq('qux').default(false))))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -722,8 +735,8 @@ ava.test('multiple string properties with object allOf', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.and(rethinkdb.row('bar').typeOf().eq('STRING')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('bar').typeOf().eq('STRING').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -752,9 +765,9 @@ ava.test('one property with nested allOf', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER')
-			.and(rethinkdb.row('foo').ge(5)
-				.and(rethinkdb.row('foo').le(7))))
+		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER').default(false)
+			.and(rethinkdb.row('foo').ge(5).default(false)
+				.and(rethinkdb.row('foo').le(7).default(false))))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -786,8 +799,8 @@ ava.test('multiple string properties with object anyOf', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('STRING')
-			.or(rethinkdb.row('foo').typeOf().eq('NUMBER')))
+		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+			.or(rethinkdb.row('foo').typeOf().eq('NUMBER').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -826,9 +839,67 @@ ava.test('top level property plus anyOf', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('bar').typeOf().eq('NUMBER').and(
-			rethinkdb.row('foo').typeOf().eq('STRING')
-				.or(rethinkdb.row('foo').typeOf().eq('NUMBER'))
+		.filter(rethinkdb.row('bar').typeOf().eq('NUMBER').default(false).and(
+			rethinkdb.row('foo').typeOf().eq('STRING').default(false)
+				.or(rethinkdb.row('foo').typeOf().eq('NUMBER').default(false))
+		))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('top level property plus anyOf with nested objects', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'count' ],
+		anyOf: [
+			{
+				type: 'object',
+				required: [ 'foo' ],
+				properties: {
+					foo: {
+						type: 'object',
+						required: [ 'bar' ],
+						properties: {
+							bar: {
+								type: 'string'
+							}
+						}
+					}
+				}
+			},
+			{
+				type: 'object',
+				required: [ 'foo' ],
+				properties: {
+					foo: {
+						type: 'object',
+						required: [ 'baz' ],
+						properties: {
+							baz: {
+								type: 'string'
+							}
+						}
+					}
+				}
+			}
+		],
+		properties: {
+			count: {
+				type: 'number'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('count').typeOf().eq('NUMBER').default(false).and(
+			rethinkdb.row('foo')('bar')
+				.typeOf().eq('STRING').default(false)
+				.or(rethinkdb.row('foo')('baz')
+					.typeOf().eq('STRING').default(false))
 		))
 
 	test.deepEqual(result.build(), query.build())
@@ -858,9 +929,9 @@ ava.test('one property with nested anyOf', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER')
-			.and(rethinkdb.row('foo').ge(5)
-				.or(rethinkdb.row('foo').le(7))))
+		.filter(rethinkdb.row('foo').typeOf().eq('NUMBER').default(false)
+			.and(rethinkdb.row('foo').ge(5).default(false)
+				.or(rethinkdb.row('foo').le(7).default(false))))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -891,9 +962,11 @@ ava.test('nested const boolean property', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('id').typeOf().eq('STRING')
-			.and(rethinkdb.row('data')('executed').typeOf().eq('BOOL')
-				.and(rethinkdb.row('data')('executed').eq(false))))
+		.filter(rethinkdb.row('id').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('data')('executed')
+				.typeOf().eq('BOOL').default(false)
+				.and(rethinkdb.row('data')('executed')
+					.eq(false).default(false))))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -918,10 +991,10 @@ ava.test('required object subset', (test) => {
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.branch(
-			rethinkdb.row('id').typeOf().eq('NULL'),
+			rethinkdb.row('id').typeOf().eq('NULL').default(false),
 			true,
-			rethinkdb.row('id').typeOf().eq('STRING'))
-			.and(rethinkdb.row('data').typeOf().eq('STRING')))
+			rethinkdb.row('id').typeOf().eq('STRING').default(false))
+			.and(rethinkdb.row('data').typeOf().eq('STRING').default(false)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -954,9 +1027,73 @@ ava.test('required nested object along with other properties', (test) => {
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
-		.filter(rethinkdb.row('id').typeOf().eq('STRING')
-			.and(rethinkdb.row('data')('foo').typeOf().eq('STRING')
-				.and(rethinkdb.row('data')('bar').typeOf().eq('STRING'))))
+		.filter(rethinkdb.row('id').typeOf().eq('STRING').default(false)
+			.and(rethinkdb.row('data')('foo')
+				.typeOf().eq('STRING').default(false)
+				.and(rethinkdb.row('data')('bar')
+					.typeOf().eq('STRING').default(false))))
+
+	test.deepEqual(result.build(), query.build())
+})
+
+ava.test('overlapping top-level and anyOf', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		anyOf: [
+			{
+				properties: {
+					data: {
+						required: [ 'target' ],
+						type: 'object',
+						properties: {
+							target: {
+								type: 'string'
+							}
+						}
+					}
+				},
+				required: [ 'data' ],
+				type: 'object'
+			},
+			{
+				properties: {
+					slug: {
+						const: 'user-guest',
+						type: 'string'
+					}
+				},
+				required: [ 'slug' ],
+				type: 'object'
+			}
+		],
+		required: [ 'slug' ],
+		additionalProperties: true,
+		properties: {
+			slug: {
+				type: 'string',
+				const: 'user-guest'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(
+			rethinkdb.row('slug').typeOf().eq('STRING').default(false)
+				.and(rethinkdb.row('slug').eq('user-guest').default(false))
+				.and(
+					rethinkdb.row('data')('target')
+						.typeOf().eq('STRING').default(false).or(
+							rethinkdb.row('slug')
+								.eq('user-guest').default(false)
+								.and(rethinkdb.row('slug')
+									.typeOf().eq('STRING').default(false))
+						)
+				)
+		)
 
 	test.deepEqual(result.build(), query.build())
 })
