@@ -883,3 +883,38 @@ ava.test('required object subset', (test) => {
 
 	test.deepEqual(result.build(), query.build())
 })
+
+ava.test('required nested object along with other properties', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		properties: {
+			id: {
+				type: 'string'
+			},
+			data: {
+				type: 'object',
+				required: [ 'foo', 'bar' ],
+				properties: {
+					foo: {
+						type: 'string'
+					},
+					bar: {
+						type: 'string'
+					}
+				}
+			}
+		},
+		required: [ 'id', 'data' ]
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('id').typeOf().eq('STRING')
+			.and(rethinkdb.row('data')('foo').typeOf().eq('STRING')
+				.and(rethinkdb.row('data')('bar').typeOf().eq('STRING'))))
+
+	test.deepEqual(result.build(), query.build())
+})
