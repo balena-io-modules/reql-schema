@@ -490,17 +490,17 @@ ava.test('one string property with enum', (test) => {
 		}
 	})
 
-	Func.constructor.nextVarId -= 2
+	Func.constructor.nextVarId -= 1
 
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
-			.and(rethinkdb.expr([
-				'foo',
-				'bar',
-				'baz' ]
-			).contains(rethinkdb.row('foo'))))
+			.and(rethinkdb.or(
+					rethinkdb.row('foo').eq('foo').default(false),
+					rethinkdb.row('foo').eq('bar').default(false),
+					rethinkdb.row('foo').eq('baz').default(false)
+			)))
 
 	test.deepEqual(result.build(), query.build())
 })
@@ -573,17 +573,17 @@ ava.test('one nested string property with enum', (test) => {
 		}
 	})
 
-	Func.constructor.nextVarId -= 2
+	Func.constructor.nextVarId -= 1
 
 	const query = rethinkdb
 		.db('myDb')
 		.table('myTable')
 		.filter(rethinkdb.row('foo')('bar').typeOf().eq('STRING').default(false)
-			.and(rethinkdb.expr([
-				'foo',
-				'bar',
-				'baz'
-			]).contains(rethinkdb.row('foo')('bar'))))
+			.and(rethinkdb.or(
+				rethinkdb.row('foo')('bar').eq('foo').default(false),
+				rethinkdb.row('foo')('bar').eq('bar').default(false),
+				rethinkdb.row('foo')('bar').eq('baz').default(false)
+			)))
 
 	test.deepEqual(result.build(), query.build())
 })
