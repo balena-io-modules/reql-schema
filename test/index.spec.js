@@ -792,6 +792,48 @@ ava.test('multiple string properties with object anyOf', (test) => {
 	test.deepEqual(result.build(), query.build())
 })
 
+ava.test('top level property plus anyOf', (test) => {
+	const result = translator('myDb', 'myTable', {
+		type: 'object',
+		required: [ 'bar' ],
+		anyOf: [
+			{
+				required: [ 'foo' ],
+				properties: {
+					foo: {
+						type: 'string'
+					}
+				}
+			},
+			{
+				required: [ 'foo' ],
+				properties: {
+					foo: {
+						type: 'number'
+					}
+				}
+			}
+		],
+		properties: {
+			bar: {
+				type: 'number'
+			}
+		}
+	})
+
+	Func.constructor.nextVarId -= 1
+
+	const query = rethinkdb
+		.db('myDb')
+		.table('myTable')
+		.filter(rethinkdb.row('bar').typeOf().eq('NUMBER').and(
+			rethinkdb.row('foo').typeOf().eq('STRING')
+				.or(rethinkdb.row('foo').typeOf().eq('NUMBER'))
+		))
+
+	test.deepEqual(result.build(), query.build())
+})
+
 ava.test('one property with nested anyOf', (test) => {
 	const result = translator('myDb', 'myTable', {
 		type: 'object',
