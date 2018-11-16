@@ -32,6 +32,6 @@
     "nyc": "^11.4.1"
   },
   "dependencies": {
-    "rethinkdb": "^2.3.3"
+    "rebirthdb-js": "github:rethinkdb/rethinkdb-js"
   }
 }
