@@ -497,9 +497,9 @@ ava.test('one string property with enum', (test) => {
 		.table('myTable')
 		.filter(rethinkdb.row('foo').typeOf().eq('STRING').default(false)
 			.and(rethinkdb.or(
-					rethinkdb.row('foo').eq('foo').default(false),
-					rethinkdb.row('foo').eq('bar').default(false),
-					rethinkdb.row('foo').eq('baz').default(false)
+				rethinkdb.row('foo').eq('foo').default(false),
+				rethinkdb.row('foo').eq('bar').default(false),
+				rethinkdb.row('foo').eq('baz').default(false)
 			)))
 
 	test.deepEqual(result.build(), query.build())
