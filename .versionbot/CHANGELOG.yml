@@ -1,4 +1,16 @@
 - commits:
+    - subject: Support secondary indexes in query generation
+      hash: 5a8685c54c20db2dbfa5c12345a44980c58e8037
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Andreas Fitzek <andreas@resin.io>
+        signed-off-by: Andreas Fitzek <andreas@resin.io>
+      author: Andreas Fitzek
+  version: 1.1.0
+  date: 2018-12-06T15:40:13.804Z
+- commits:
     - subject: Set v1.0.0 in changelog to match published version
       hash: 30e7df6edb79afe69909caf2a3fd8c1f6803a99c
       body: ''
