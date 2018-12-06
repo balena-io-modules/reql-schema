@@ -1,1 +1,12 @@
-[]
+- commits:
+    - subject: Set v1.0.0 in changelog to match published version
+      hash: 30e7df6edb79afe69909caf2a3fd8c1f6803a99c
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 1.0.1
+  date: 2018-12-06T14:34:45.436Z
