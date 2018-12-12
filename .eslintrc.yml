@@ -211,6 +211,7 @@ rules:
   max-len:
     - error
     - code: 80
+      tabWidth: 2
       comments: 150
       ignoreComments: false
       ignoreTrailingComments: false
