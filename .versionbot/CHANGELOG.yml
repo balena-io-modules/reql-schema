@@ -1,4 +1,16 @@
 - commits:
+    - subject: Switch rethinkdb adapter to latest rethinkdbdash
+      hash: cfef6df74bb03ae1c3a93ebf868b65d6b4bcf8d7
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Giovanni Garufi <giovanni@balena.io>
+        signed-off-by: Giovanni Garufi <giovanni@balena.io>
+      author: Giovanni Garufi
+  version: 1.1.1
+  date: 2018-12-11T12:07:16.393Z
+- commits:
     - subject: Support secondary indexes in query generation
       hash: 5a8685c54c20db2dbfa5c12345a44980c58e8037
       body: ''
