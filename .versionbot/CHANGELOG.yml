@@ -1,4 +1,16 @@
 - commits:
+    - subject: Take an optional orderBy option applied before the filter
+      hash: 2f0a9dacf98f46601aad739b62be58a8ffd29f8b
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Juan Cruz Viotti <juan@balena.io>
+        signed-off-by: Juan Cruz Viotti <juan@balena.io>
+      author: Juan Cruz Viotti
+  version: 1.2.0
+  date: 2018-12-20T21:47:00.350Z
+- commits:
     - subject: Switch rethinkdb adapter to latest rethinkdbdash
       hash: cfef6df74bb03ae1c3a93ebf868b65d6b4bcf8d7
       body: ''
